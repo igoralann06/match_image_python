@@ -44,7 +44,7 @@ for filename in os.listdir(directory):
         time.sleep(2)
 
         # Upload Image
-        upload_tab = driver.find_element(By.XPATH, "//span[text()='upload a file']")
+        upload_tab = driver.find_element(By.XPATH, "//span[text()='upload a file  ']")
         upload_tab.click()
         time.sleep(2)
 
