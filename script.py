@@ -24,6 +24,8 @@ current_time = now.strftime("%m-%d-%Y-%H-%M-%S")
 os.mkdir("products/"+current_time)
 
 directory = "./data"
+urls = []
+output = "products/" + current_time + "/output.txt"
 
 for filename in os.listdir(directory):
     file_path = os.path.join(directory, filename)
@@ -60,9 +62,6 @@ for filename in os.listdir(directory):
         results = driver.find_elements(By.TAG_NAME, "img")
         search_results = [result.get_attribute('src') for result in results]  # Limit to 10 results
 
-        output = "products/" + current_time + "/output.txt"
-        urls = []
-
         # Download images
         for idx, img_url in enumerate(search_results):
             try:
@@ -75,7 +74,7 @@ for filename in os.listdir(directory):
                                 for chunk in response.iter_content(1024):
                                     file.write(chunk)
                             urls.append(img_url+"\n")
-                            print(f"Downloaded: {file_path}")
+                            print(img_url)
                     
                     elif img_url.startswith("data:image"):  # Base64 image
                         # Extract Base64 data
@@ -84,11 +83,14 @@ for filename in os.listdir(directory):
                         with open(file_path, "wb") as file:
                             file.write(base64.b64decode(base64_data))
                         urls.append("Raw Base64 image\n")
-                        print(f"Downloaded Base64 Image: {file_path}")
+                        print("Raw Base64 image")
                     break;
 
             except Exception as e:
                 print(f"Failed to download {img_url}: {e}")
 
 print(urls)
+with open(output, "w") as file:
+    for url in urls:
+        file.write(url)
     # Wait for search results 
