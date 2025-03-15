@@ -15,7 +15,6 @@ options.add_argument("--start-maximized")
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 index = 0
-file_path = "output.txt"
 
 if(not os.path.isdir("products")):
     os.mkdir("products")
@@ -61,8 +60,10 @@ for filename in os.listdir(directory):
         results = driver.find_elements(By.TAG_NAME, "img")
         search_results = [result.get_attribute('src') for result in results]  # Limit to 10 results
 
+        log_path = "products/" + current_time + "/output.txt"
+
         # Download images
-        with open(file_path, "w") as file:
+        with open(log_path, "w") as file:
             for idx, img_url in enumerate(search_results):
                 try:
                     if(idx > 2):
