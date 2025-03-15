@@ -54,7 +54,7 @@ for filename in os.listdir(directory):
         file_input.send_keys(absolute_path)
 
         if(index == 1):
-            time.sleep(20)  # Adjust the sleep time if needed to ensure results load
+            time.sleep(30)  # Adjust the sleep time if needed to ensure results load
         else:
             time.sleep(2)
 
