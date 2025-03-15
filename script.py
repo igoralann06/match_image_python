@@ -76,7 +76,7 @@ for filename in os.listdir(directory):
                                         file.write(chunk)
                                 print(f"Downloaded: {file_path}")
                                 
-                                file.write(file_path + "\n")
+                                file.write(log_path + "\n")
                         
                         elif img_url.startswith("data:image"):  # Base64 image
                             # Extract Base64 data
