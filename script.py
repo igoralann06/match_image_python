@@ -60,8 +60,6 @@ for filename in os.listdir(directory):
         results = driver.find_elements(By.TAG_NAME, "img")
         search_results = [result.get_attribute('src') for result in results]  # Limit to 10 results
 
-        log_path = "products/" + current_time + "/output.txt"
-
         # Download images
         for idx, img_url in enumerate(search_results):
             try:
@@ -74,8 +72,6 @@ for filename in os.listdir(directory):
                                 for chunk in response.iter_content(1024):
                                     file.write(chunk)
                             print(f"Downloaded: {file_path}")
-                            with open(log_path, "wb") as logfile:
-                                logfile.write(file_path + "\n")
                     
                     elif img_url.startswith("data:image"):  # Base64 image
                         # Extract Base64 data
@@ -84,8 +80,6 @@ for filename in os.listdir(directory):
                         with open(file_path, "wb") as file:
                             file.write(base64.b64decode(base64_data))
                         print(f"Downloaded Base64 Image: {file_path}")
-                        with open(log_path, "wb") as logfile:
-                            logfile.write("Raw base64 file" + "\n")
                     break;
 
             except Exception as e:
