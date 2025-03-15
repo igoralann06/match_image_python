@@ -15,6 +15,7 @@ options.add_argument("--start-maximized")
 driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
 index = 0
+file_path = "output.txt"
 
 if(not os.path.isdir("products")):
     os.mkdir("products")
@@ -61,28 +62,31 @@ for filename in os.listdir(directory):
         search_results = [result.get_attribute('src') for result in results]  # Limit to 10 results
 
         # Download images
-        for idx, img_url in enumerate(search_results):
-            try:
-                if(idx > 2):
-                    if img_url.startswith("http"):  # Regular image URL
-                        response = requests.get(img_url, stream=True)
-                        if response.status_code == 200:
+        with open(file_path, "w") as file:
+            for idx, img_url in enumerate(search_results):
+                try:
+                    if(idx > 2):
+                        if img_url.startswith("http"):  # Regular image URL
+                            response = requests.get(img_url, stream=True)
+                            if response.status_code == 200:
+                                file_path = prefix
+                                with open(file_path, "wb") as file:
+                                    for chunk in response.iter_content(1024):
+                                        file.write(chunk)
+                                print(f"Downloaded: {file_path}")
+                                
+                                file.write(file_path + "\n")
+                        
+                        elif img_url.startswith("data:image"):  # Base64 image
+                            # Extract Base64 data
+                            base64_data = img_url.split(",")[1]
                             file_path = prefix
                             with open(file_path, "wb") as file:
-                                for chunk in response.iter_content(1024):
-                                    file.write(chunk)
-                            print(f"Downloaded: {file_path}")
-                    
-                    elif img_url.startswith("data:image"):  # Base64 image
-                        # Extract Base64 data
-                        base64_data = img_url.split(",")[1]
-                        file_path = prefix
-                        with open(file_path, "wb") as file:
-                            file.write(base64.b64decode(base64_data))
-                        print(f"Downloaded Base64 Image: {file_path}")
-                    break;
+                                file.write(base64.b64decode(base64_data))
+                            print(f"Downloaded Base64 Image: {file_path}")
+                        break;
 
-            except Exception as e:
-                print(f"Failed to download {img_url}: {e}")
+                except Exception as e:
+                    print(f"Failed to download {img_url}: {e}")
 
     # Wait for search results 
