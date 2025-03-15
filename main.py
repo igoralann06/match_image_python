@@ -24,8 +24,6 @@ current_time = now.strftime("%m-%d-%Y-%H-%M-%S")
 os.mkdir("products/"+current_time)
 
 directory = "./data"
-urls = []
-output = "products/" + current_time + "/output.txt"
 
 for filename in os.listdir(directory):
     file_path = os.path.join(directory, filename)
@@ -33,6 +31,7 @@ for filename in os.listdir(directory):
 
         absolute_path = os.path.abspath(file_path)
         prefix = "products/" + current_time + "/" + filename
+        os.mkdir(prefix)
 
         index = index + 1
         # Open Google Images
@@ -54,43 +53,37 @@ for filename in os.listdir(directory):
         file_input.send_keys(absolute_path)
 
         if(index == 1):
-            time.sleep(20)  # Adjust the sleep time if needed to ensure results load
+            time.sleep(30)  # Adjust the sleep time if needed to ensure results load
         else:
             time.sleep(2)
 
         # You can now scrape the search results. For example, to extract the first 10 results:
         results = driver.find_elements(By.TAG_NAME, "img")
         search_results = [result.get_attribute('src') for result in results]  # Limit to 10 results
+        print(search_results)
 
         # Download images
         for idx, img_url in enumerate(search_results):
             try:
                 if(idx > 2):
                     if img_url.startswith("http"):  # Regular image URL
-                        response = requests.get(search_results[idx+2], stream=True)
+                        response = requests.get(img_url, stream=True)
                         if response.status_code == 200:
-                            file_path = prefix
+                            file_path = os.path.join(prefix, f"{idx+1}.jpg")
                             with open(file_path, "wb") as file:
                                 for chunk in response.iter_content(1024):
                                     file.write(chunk)
-                            urls.append(img_url+"\n")
-                            print(img_url)
-                    
+                            print(f"Downloaded: {file_path}")
+
                     elif img_url.startswith("data:image"):  # Base64 image
                         # Extract Base64 data
-                        base64_data = search_results[idx+2].split(",")[1]
-                        file_path = prefix
+                        base64_data = img_url.split(",")[1]
+                        file_path = os.path.join(prefix, f"{idx+1}.png")
                         with open(file_path, "wb") as file:
                             file.write(base64.b64decode(base64_data))
-                        urls.append("Raw Base64 image\n")
-                        print("Raw Base64 image")
-                    break;
+                        print(f"Downloaded Base64 Image: {file_path}")
 
             except Exception as e:
                 print(f"Failed to download {img_url}: {e}")
 
-print(urls)
-with open(output, "w") as file:
-    for url in urls:
-        file.write(url)
     # Wait for search results 
