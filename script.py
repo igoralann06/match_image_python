@@ -63,32 +63,32 @@ for filename in os.listdir(directory):
         log_path = "products/" + current_time + "/output.txt"
 
         # Download images
-        with open(log_path, "wb") as logfile:
-            for idx, img_url in enumerate(search_results):
-                try:
-                    if(idx > 2):
-                        if img_url.startswith("http"):  # Regular image URL
-                            response = requests.get(img_url, stream=True)
-                            if response.status_code == 200:
-                                file_path = prefix
-                                with open(file_path, "wb") as file:
-                                    for chunk in response.iter_content(1024):
-                                        file.write(chunk)
-                                print(f"Downloaded: {file_path}")
-                                
-                                logfile.write(file_path + "\n")
-                        
-                        elif img_url.startswith("data:image"):  # Base64 image
-                            # Extract Base64 data
-                            base64_data = img_url.split(",")[1]
+        for idx, img_url in enumerate(search_results):
+            try:
+                if(idx > 2):
+                    if img_url.startswith("http"):  # Regular image URL
+                        response = requests.get(img_url, stream=True)
+                        if response.status_code == 200:
                             file_path = prefix
                             with open(file_path, "wb") as file:
-                                file.write(base64.b64decode(base64_data))
-                            print(f"Downloaded Base64 Image: {file_path}")
+                                for chunk in response.iter_content(1024):
+                                    file.write(chunk)
+                            print(f"Downloaded: {file_path}")
+                            with open(log_path, "wb") as logfile:
+                                logfile.write(file_path + "\n")
+                    
+                    elif img_url.startswith("data:image"):  # Base64 image
+                        # Extract Base64 data
+                        base64_data = img_url.split(",")[1]
+                        file_path = prefix
+                        with open(file_path, "wb") as file:
+                            file.write(base64.b64decode(base64_data))
+                        print(f"Downloaded Base64 Image: {file_path}")
+                        with open(log_path, "wb") as logfile:
                             logfile.write("Raw base64 file" + "\n")
-                        break;
+                    break;
 
-                except Exception as e:
-                    print(f"Failed to download {img_url}: {e}")
+            except Exception as e:
+                print(f"Failed to download {img_url}: {e}")
 
     # Wait for search results 
