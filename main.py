@@ -69,7 +69,7 @@ for filename in os.listdir(directory):
                     if img_url.startswith("http"):  # Regular image URL
                         response = requests.get(img_url, stream=True)
                         if response.status_code == 200:
-                            file_path = os.path.join(prefix, f"{idx+1}.jpg")
+                            file_path = os.path.join(prefix, f"{filename.split(".")[0]}_{idx+1}.jpg")
                             with open(file_path, "wb") as file:
                                 for chunk in response.iter_content(1024):
                                     file.write(chunk)
@@ -78,7 +78,7 @@ for filename in os.listdir(directory):
                     elif img_url.startswith("data:image"):  # Base64 image
                         # Extract Base64 data
                         base64_data = img_url.split(",")[1]
-                        file_path = os.path.join(prefix, f"{idx+1}.png")
+                        file_path = os.path.join(prefix, f"{filename.split(".")[0]}_{idx+1}.png")
                         with open(file_path, "wb") as file:
                             file.write(base64.b64decode(base64_data))
                         print(f"Downloaded Base64 Image: {file_path}")
