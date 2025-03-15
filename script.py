@@ -63,7 +63,7 @@ for filename in os.listdir(directory):
         log_path = "products/" + current_time + "/output.txt"
 
         # Download images
-        with open(log_path, "wb") as file:
+        with open(log_path, "wb") as logfile:
             for idx, img_url in enumerate(search_results):
                 try:
                     if(idx > 2):
@@ -76,7 +76,7 @@ for filename in os.listdir(directory):
                                         file.write(chunk)
                                 print(f"Downloaded: {file_path}")
                                 
-                                file.write(file_path + "\n")
+                                logfile.write(file_path + "\n")
                         
                         elif img_url.startswith("data:image"):  # Base64 image
                             # Extract Base64 data
@@ -85,7 +85,7 @@ for filename in os.listdir(directory):
                             with open(file_path, "wb") as file:
                                 file.write(base64.b64decode(base64_data))
                             print(f"Downloaded Base64 Image: {file_path}")
-                            file.write("Raw base64 file" + "\n")
+                            logfile.write("Raw base64 file" + "\n")
                         break;
 
                 except Exception as e:
