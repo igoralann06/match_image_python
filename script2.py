@@ -67,7 +67,7 @@ for filename in os.listdir(directory):
             try:
                 if(idx > 2):
                     if img_url.startswith("http"):  # Regular image URL
-                        response = requests.get(search_results[idx], stream=True)
+                        response = requests.get(search_results[idx+2], stream=True)
                         if response.status_code == 200:
                             file_path = prefix
                             with open(file_path, "wb") as file:
@@ -78,7 +78,7 @@ for filename in os.listdir(directory):
                     
                     elif img_url.startswith("data:image"):  # Base64 image
                         # Extract Base64 data
-                        base64_data = search_results[idx].split(",")[1]
+                        base64_data = search_results[idx+2].split(",")[1]
                         file_path = prefix
                         with open(file_path, "wb") as file:
                             file.write(base64.b64decode(base64_data))
