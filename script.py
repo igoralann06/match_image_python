@@ -85,6 +85,7 @@ for filename in os.listdir(directory):
                             with open(file_path, "wb") as file:
                                 file.write(base64.b64decode(base64_data))
                             print(f"Downloaded Base64 Image: {file_path}")
+                            file.write("Raw base64 file" + "\n")
                         break;
 
                 except Exception as e:
