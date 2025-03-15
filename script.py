@@ -63,7 +63,7 @@ for filename in os.listdir(directory):
         log_path = "products/" + current_time + "/output.txt"
 
         # Download images
-        with open(log_path, "w") as file:
+        with open(log_path, "wb") as file:
             for idx, img_url in enumerate(search_results):
                 try:
                     if(idx > 2):
