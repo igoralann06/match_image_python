@@ -65,7 +65,7 @@ for filename in os.listdir(directory):
         # Download images
         for idx, img_url in enumerate(search_results):
             try:
-                if(idx > 2 and idx % 2 == 0):
+                if(idx > 2):
                     if img_url.startswith("http"):  # Regular image URL
                         response = requests.get(img_url, stream=True)
                         if response.status_code == 200:
