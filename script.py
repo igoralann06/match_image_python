@@ -62,14 +62,12 @@ for filename in os.listdir(directory):
         results = driver.find_elements(By.TAG_NAME, "img")
         search_results = [result.get_attribute('src') for result in results]  # Limit to 10 results
 
-        result = enumerate(search_results)
-
         # Download images
-        for idx, img_url in result:
+        for idx, img_url in enumerate(search_results):
             try:
                 if(idx > 2):
                     if img_url.startswith("http"):  # Regular image URL
-                        response = requests.get(result[idx+2], stream=True)
+                        response = requests.get(search_results[idx+2], stream=True)
                         if response.status_code == 200:
                             file_path = prefix
                             with open(file_path, "wb") as file:
@@ -80,7 +78,7 @@ for filename in os.listdir(directory):
                     
                     elif img_url.startswith("data:image"):  # Base64 image
                         # Extract Base64 data
-                        base64_data = result[idx+2].split(",")[1]
+                        base64_data = search_results[idx+2].split(",")[1]
                         file_path = prefix
                         with open(file_path, "wb") as file:
                             file.write(base64.b64decode(base64_data))
