@@ -56,6 +56,7 @@ def find_similar_images(uploaded_image_path):
     
     file_input = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
     file_input.send_keys(os.path.abspath(uploaded_image_path))
+    print(uploaded_image_path)
     time.sleep(5)
     
     results = driver.find_elements(By.TAG_NAME, "img")
@@ -85,6 +86,7 @@ def find_similar_images(uploaded_image_path):
         except Exception as e:
             print(f"Failed to download {img_url}: {e}")
     driver.quit()
+    print(matched_images)
     return matched_images
 
 @app.route('/products/<path:filename>')
