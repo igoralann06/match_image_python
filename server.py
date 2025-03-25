@@ -46,11 +46,11 @@ def find_similar_images(uploaded_image_path):
     driver.get("https://www.google.com/imghp")
     time.sleep(2)
     
-    lens_button = driver.find_element(By.XPATH, "//div[@aria-label='Поиск по картинке']")
+    lens_button = driver.find_element(By.XPATH, "//div[@aria-label='Search by image']")
     lens_button.click()
     time.sleep(2)
     
-    upload_tab = driver.find_element(By.XPATH, "//span[text()='загрузите файл']")
+    upload_tab = driver.find_element(By.XPATH, "//span[text()='upload a file  ']")
     upload_tab.click()
     time.sleep(2)
     
