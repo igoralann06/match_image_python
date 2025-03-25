@@ -12,23 +12,18 @@ import base64
 
 app = Flask(__name__)
 
-# Configure paths
 UPLOAD_FOLDER = "uploads"
 PRODUCTS_DIR = "products"
 TARGET_DIR = "target"
-ITEMS_PER_PAGE = 20
 ALLOWED_EXTENSIONS = {"png", "jpg", "jpeg", "gif", "bmp"}
 
-# Ensure directories exist
 for folder in [UPLOAD_FOLDER, PRODUCTS_DIR, TARGET_DIR]:
     os.makedirs(folder, exist_ok=True)
 
 def allowed_file(filename):
-    """Check if the file is an allowed image type."""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 def clear_directory(directory):
-    """Delete all files in the specified directory."""
     for filename in os.listdir(directory):
         file_path = os.path.join(directory, filename)
         try:
@@ -38,7 +33,6 @@ def clear_directory(directory):
             print(f"Error deleting {file_path}: {e}")
 
 def find_similar_images(uploaded_image_path):
-    """Find similar images using Selenium and Google Images."""
     options = webdriver.ChromeOptions()
     options.add_argument("--start-maximized")
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
@@ -56,7 +50,6 @@ def find_similar_images(uploaded_image_path):
     
     file_input = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
     file_input.send_keys(os.path.abspath(uploaded_image_path))
-    print(os.path.abspath(uploaded_image_path))
     time.sleep(25)
     
     results = driver.find_elements(By.TAG_NAME, "img")
@@ -85,7 +78,6 @@ def find_similar_images(uploaded_image_path):
         except Exception as e:
             print(f"Failed to download {img_url}: {e}")
     driver.quit()
-    print(matched_images)
     return matched_images
 
 @app.route('/products/<path:filename>')
@@ -98,14 +90,11 @@ def serve_uploads(filename):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    """Handle file upload and display matched images."""
     matched_images = []
     uploaded_filename = None
 
     if request.method == 'POST':
-        # Clear old images from 'products' folder
         clear_directory(PRODUCTS_DIR)
-
         if 'file' not in request.files:
             return redirect(request.url)
         file = request.files['file']
@@ -119,27 +108,16 @@ def index():
 
         matched_images = find_similar_images(uploaded_image_path)
 
-    page = int(request.args.get('page', 1))
-    start = (page - 1) * ITEMS_PER_PAGE
-    end = start + ITEMS_PER_PAGE
-    total_pages = -(-len(matched_images) // ITEMS_PER_PAGE)
-
-    return render_template("index.html", images=matched_images[start:end],
-                           page=page, total_pages=total_pages,
-                           uploaded_filename=uploaded_filename)
+    return render_template("index.html", images=matched_images, uploaded_filename=uploaded_filename)
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    """Handle image selection and copy to target directory."""
     selected_images = request.form.getlist('selected_images')
-    page = request.form.get('page', 1)
-
     for img in selected_images:
         src_path = os.path.join(PRODUCTS_DIR, img)
         dest_path = os.path.join(TARGET_DIR, os.path.basename(img))
         shutil.copy(src_path, dest_path)
-
-    return redirect(url_for('index', page=page))
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run()
