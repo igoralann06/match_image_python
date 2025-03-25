@@ -86,7 +86,7 @@
         <div class="image-container">
             {% for img in images %}
             <div class="image-item">
-                <img src="{{ url_for('serve_products', filename=img) }}" alt="Matched Image">
+                <img src="/products/{{img}}" alt="Matched Image">
                 <br>
                 <input type="checkbox" name="selected_images" value="{{ img }}">
             </div>
