@@ -46,18 +46,18 @@ def find_similar_images(uploaded_image_path):
     driver.get("https://www.google.com/imghp")
     time.sleep(2)
     
-    lens_button = driver.find_element(By.XPATH, "//div[@aria-label='Search by image']")
+    lens_button = driver.find_element(By.XPATH, "//div[@aria-label='Поиск по картинке']")
     lens_button.click()
     time.sleep(2)
     
-    upload_tab = driver.find_element(By.XPATH, "//span[text()='upload a file  ']")
+    upload_tab = driver.find_element(By.XPATH, "//span[text()='загрузите файл']")
     upload_tab.click()
     time.sleep(2)
     
     file_input = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
     file_input.send_keys(os.path.abspath(uploaded_image_path))
     print(os.path.abspath(uploaded_image_path))
-    time.sleep(30)
+    time.sleep(25)
     
     results = driver.find_elements(By.TAG_NAME, "img")
     search_results = [result.get_attribute('src') for result in results]
@@ -82,7 +82,6 @@ def find_similar_images(uploaded_image_path):
                     with open(file_path, "wb") as file:
                         file.write(base64.b64decode(base64_data))
                     matched_images.append(filename)
-                break
         except Exception as e:
             print(f"Failed to download {img_url}: {e}")
     driver.quit()
