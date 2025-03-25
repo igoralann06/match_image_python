@@ -57,7 +57,7 @@ def find_similar_images(uploaded_image_path):
     file_input = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
     file_input.send_keys(os.path.abspath(uploaded_image_path))
     print(os.path.abspath(uploaded_image_path))
-    time.sleep(5)
+    time.sleep(30)
     
     results = driver.find_elements(By.TAG_NAME, "img")
     search_results = [result.get_attribute('src') for result in results]
